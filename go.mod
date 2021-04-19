@@ -3,7 +3,7 @@ module github.com/kudelskisecurity/wireguard
 go 1.15
 
 require (
-	github.com/kudelskisecurity/crystals-go v0.0.0-20210412083848-55bc5f0
+	github.com/kudelskisecurity/crystals-go v0.0.0-20210412083628-55bc5f067b3a
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4
