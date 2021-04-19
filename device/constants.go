@@ -8,7 +8,7 @@ package device
 import (
 	"time"
 
-	kyber "gitlab.kudelski.com/ks-fun/go-pqs/crystals-kyber"
+	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 )
 
 /* Specification constants */

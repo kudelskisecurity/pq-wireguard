@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/conn"
 	"golang.org/x/crypto/blake2s"
 )
 
@@ -117,6 +117,17 @@ func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
 	//var ss NoiseSymmetricKey
 	//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(pk) here
 	handshake.remoteStatic = pk
+<<<<<<< HEAD
+=======
+
+	var h KyberKEMPK
+	for i, b := range device.staticIdentity.publicKey {
+		h[i] = b | handshake.remoteStatic[i]
+	}
+	hpks := blake2s.Sum256(h[:])
+	copy(handshake.presharedKey[:], hpks[:])
+
+>>>>>>> naive
 	handshake.mutex.Unlock()
 
 	// reset endpoint
@@ -127,12 +138,15 @@ func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
 	device.peers.keyMap[hpk] = peer
 	device.peers.empty.Set(false)
 
+<<<<<<< HEAD
 	var h KyberKEMPK
 	for i, b := range device.staticIdentity.publicKey {
 		h[i] = b | handshake.remoteStatic[i]
 	}
 	hpks := blake2s.Sum256(h[:])
 	copy(handshake.presharedKey[:], hpks[:])
+=======
+>>>>>>> naive
 	// start peer
 
 	if peer.device.isUp.Get() {
