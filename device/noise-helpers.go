@@ -11,7 +11,7 @@ import (
 	"crypto/subtle"
 	"hash"
 
-	kyber "gitlab.kudelski.com/ks-fun/go-pqs/crystals-kyber"
+	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 	"golang.org/x/crypto/blake2s"
 	"golang.org/x/crypto/sha3"
 )
