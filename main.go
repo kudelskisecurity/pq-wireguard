@@ -15,9 +15,9 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/PizzaWhisperer/wireguard/device"
-	"github.com/PizzaWhisperer/wireguard/ipc"
-	"github.com/PizzaWhisperer/wireguard/tun"
+	"github.com/kudelskisecurity/wireguard/device"
+	"github.com/kudelskisecurity/wireguard/ipc"
+	"github.com/kudelskisecurity/wireguard/tun"
 )
 
 const (

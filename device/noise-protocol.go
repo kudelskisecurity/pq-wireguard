@@ -16,9 +16,8 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/crypto/poly1305"
 	"golang.org/x/crypto/sha3"
-
-	"gitlab.kudelski.com/ks-fun/go-pqs/crystals-kyber"
-	"github.com/PizzaWhisperer/wireguard/tai64n"
+	kyber "gitlab.kudelski.com/ks-fun/go-pqs/crystals-kyber"
+	"github.com/kudelskisecurity/wireguard/tai64n"
 )
 
 type handshakeState int

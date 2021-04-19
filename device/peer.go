@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/conn"
 	"golang.org/x/crypto/blake2s"
 )
 

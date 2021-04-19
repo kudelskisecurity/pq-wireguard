@@ -11,7 +11,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/PizzaWhisperer/wireguard/tun"
+	"github.com/kudelskisecurity/wireguard/tun"
 )
 
 func Ping(dst, src net.IP) []byte {

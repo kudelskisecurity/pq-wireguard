@@ -13,8 +13,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/PizzaWhisperer/wireguard/device"
-	"github.com/PizzaWhisperer/wireguard/tun/netstack"
+	"github.com/kudelskisecurity/wireguard/device"
+	"github.com/kudelskisecurity/wireguard/tun/netstack"
 )
 
 func main() {

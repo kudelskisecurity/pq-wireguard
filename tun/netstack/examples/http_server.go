@@ -8,8 +8,8 @@
 package main
 
 import (
-	"github.com/PizzaWhisperer/wireguard/device"
-	"github.com/PizzaWhisperer/wireguard/tun/netstack"
+	"github.com/kudelskisecurity/wireguard/device"
+	"github.com/kudelskisecurity/wireguard/tun/netstack"
 	"io"
 	"log"
 	"net"

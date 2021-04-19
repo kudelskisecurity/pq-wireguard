@@ -8,7 +8,7 @@ package device
 import (
 	"sync/atomic"
 
-	"github.com/PizzaWhisperer/wireguard/tun"
+	"github.com/kudelskisecurity/wireguard/tun"
 )
 
 const DefaultMTU = 1420

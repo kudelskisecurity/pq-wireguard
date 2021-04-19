@@ -18,7 +18,7 @@ import (
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/conn"
 )
 
 type QueueHandshakeElement struct {
