@@ -12,10 +12,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
-	"github.com/PizzaWhisperer/wireguard/ratelimiter"
-	"github.com/PizzaWhisperer/wireguard/rwcancel"
-	"github.com/PizzaWhisperer/wireguard/tun"
+	"github.com/kudelskisecurity/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/ratelimiter"
+	"github.com/kudelskisecurity/wireguard/rwcancel"
+	"github.com/kudelskisecurity/wireguard/tun"
 	"golang.org/x/crypto/blake2s"
 	"golang.org/x/crypto/sha3"
 	"golang.org/x/net/ipv4"
@@ -48,8 +48,13 @@ type Device struct {
 
 	staticIdentity struct {
 		sync.RWMutex
+<<<<<<< HEAD
 		privateKey RainbowSK
 		publicKey  RainbowPK
+=======
+		privateKey KyberKEMSK
+		publicKey  KyberKEMPK
+>>>>>>> naive
 		sigma      []byte //long term secret
 	}
 
@@ -248,7 +253,11 @@ func (device *Device) IsUnderLoad() bool {
 }
 
 //Set the KEM keys
+<<<<<<< HEAD
 func (device *Device) SetPrivateKey(sk RainbowSK) error {
+=======
+func (device *Device) SetPrivateKey(sk KyberKEMSK) error {
+>>>>>>> naive
 	// lock required resources
 
 	device.staticIdentity.Lock()
@@ -292,7 +301,11 @@ func (device *Device) SetPrivateKey(sk RainbowSK) error {
 }
 
 //Set the KEM keys
+<<<<<<< HEAD
 func (device *Device) SetPublicKey(pk RainbowPK) error {
+=======
+func (device *Device) SetPublicKey(pk KyberKEMPK) error {
+>>>>>>> naive
 	// lock required resources
 
 	device.staticIdentity.Lock()
@@ -324,12 +337,20 @@ func (device *Device) SetPublicKey(pk RainbowPK) error {
 	expiredPeers := make([]*Peer, 0, len(device.peers.keyMap))
 	for _, peer := range device.peers.keyMap {
 		handshake := &peer.handshake
+<<<<<<< HEAD
 		var h RainbowPK
+=======
+		var h KyberKEMPK
+>>>>>>> naive
 		for i, b := range device.staticIdentity.publicKey {
 			h[i] = b | handshake.remoteStatic[i]
 		}
 		hpks := blake2s.Sum256(h[:])
+<<<<<<< HEAD
 		copy(handshake.presharedKey[:] , hpks[:])
+=======
+		copy(handshake.presharedKey[:],hpks[:])
+>>>>>>> naive
 		//var ss NoiseSymmetricKey
 		//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(handshake.remoteStatic) //here
 		expiredPeers = append(expiredPeers, peer)
@@ -622,5 +643,9 @@ func (device *Device) BindClose() error {
 }
 
 func (device *Device) PrintDevice() {
+<<<<<<< HEAD
 	device.log.Verbosef("Device\nSK: %x\nPK: %x\n", device.staticIdentity.privateKey[:8], device.staticIdentity.publicKey[:8])
+=======
+	device.log.Verbosef("Device\nSK: %x\nPK: %x\n", device.staticIdentity.privateKey, device.staticIdentity.publicKey)
+>>>>>>> naive
 }

@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/PizzaWhisperer/wireguard/tun/tuntest"
+	"github.com/kudelskisecurity/wireguard/tun/tuntest"
 	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 )
 

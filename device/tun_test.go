@@ -9,7 +9,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/PizzaWhisperer/wireguard/tun"
+	"github.com/kudelskisecurity/wireguard/tun"
 )
 
 // newDummyTUN creates a dummy TUN device with the specified name.

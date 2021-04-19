@@ -8,7 +8,7 @@ package device
 import (
 	"errors"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/conn"
 )
 
 type DummyDatagram struct {

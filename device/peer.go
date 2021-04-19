@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/PizzaWhisperer/wireguard/conn"
+	"github.com/kudelskisecurity/wireguard/conn"
 	"golang.org/x/crypto/blake2s"
 )
 
@@ -76,7 +76,11 @@ type Peer struct {
 	cookieGenerator CookieGenerator
 }
 
+<<<<<<< HEAD
 func (device *Device) NewPeer(pk RainbowPK) (*Peer, error) {
+=======
+func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
+>>>>>>> naive
 	if device.isClosed.Get() {
 		return nil, errors.New("device closed")
 	}
@@ -117,12 +121,21 @@ func (device *Device) NewPeer(pk RainbowPK) (*Peer, error) {
 	//var ss NoiseSymmetricKey
 	//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(pk) here
 	handshake.remoteStatic = pk
+<<<<<<< HEAD
 	var h RainbowPK
+=======
+
+	var h KyberKEMPK
+>>>>>>> naive
 	for i, b := range device.staticIdentity.publicKey {
 		h[i] = b | handshake.remoteStatic[i]
 	}
 	hpks := blake2s.Sum256(h[:])
 	copy(handshake.presharedKey[:], hpks[:])
+<<<<<<< HEAD
+=======
+
+>>>>>>> naive
 	handshake.mutex.Unlock()
 
 	// reset endpoint

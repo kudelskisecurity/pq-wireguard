@@ -8,8 +8,8 @@ package device
 import (
 	"time"
 
+	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
-	kyber "gitlab.kudelski.com/ks-fun/go-pqs/crystals-kyber"
 )
 
 /* Specification constants */
