@@ -15,7 +15,6 @@ import (
 	"golang.org/x/crypto/blake2s"
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/crypto/poly1305"
-	"golang.org/x/crypto/sha3"
 	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 		oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 	"github.com/kudelskisecurity/wireguard/tai64n"

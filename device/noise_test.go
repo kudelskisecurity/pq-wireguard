@@ -52,12 +52,6 @@ func BenchmarkHandshakeClient(b *testing.B) {
 
 		b.StartTimer()
 		msg1, _ := dev1.CreateMessageInitiation(peer2)
-<<<<<<< HEAD
-=======
-		packet := make([]byte, 0, 256)
-		writer := bytes.NewBuffer(packet)
-		binary.Write(writer, binary.LittleEndian, msg1)
->>>>>>> naive
 		b.StopTimer()
 
 		dev2.ConsumeMessageInitiation(msg1)
@@ -143,19 +137,12 @@ func TestNoiseHandshake(t *testing.T) {
 	defer dev1.Close()
 	defer dev2.Close()
 
-<<<<<<< HEAD
 	//fmt.Printf("pk %v\nsk %v\n", dev1.staticIdentity.publicKey[:100], dev1.staticIdentity.privateKey[:])
-
-=======
->>>>>>> naive
 	peer1, err := dev2.NewPeer(dev1.staticIdentity.publicKey)
 	if err != nil {
 		t.Fatal(err)
 	}
-<<<<<<< HEAD
 
-=======
->>>>>>> naive
 	peer2, err := dev1.NewPeer(dev2.staticIdentity.publicKey)
 	if err != nil {
 		t.Fatal(err)
@@ -170,10 +157,6 @@ func TestNoiseHandshake(t *testing.T) {
 	if bytes.Equal(peer1.handshake.presharedKey[:], make([]byte, 32)) {
 		t.Fatal("preshared nil")
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> naive
 	/* simulate handshake */
 
 	// initiation message
@@ -183,18 +166,11 @@ func TestNoiseHandshake(t *testing.T) {
 	msg1, err := dev1.CreateMessageInitiation(peer2)
 	assertNil(t, err)
 
-<<<<<<< HEAD
 	var buff [MessageInitiationSize]byte
 	writer := bytes.NewBuffer(buff[:0])
 	err = binary.Write(writer, binary.LittleEndian, msg1)
 	assertNil(t, err)
 
-=======
-	packet := make([]byte, 0, 256)
-	writer := bytes.NewBuffer(packet)
-	err = binary.Write(writer, binary.LittleEndian, msg1)
-	assertNil(t, err)
->>>>>>> naive
 	peer := dev2.ConsumeMessageInitiation(msg1)
 	if peer == nil {
 		t.Fatal("handshake failed at initiation message")
