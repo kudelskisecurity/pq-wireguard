@@ -149,10 +149,7 @@ func TestNoiseHandshake(t *testing.T) {
 		peer1.handshake.presharedKey[:],
 		peer2.handshake.presharedKey[:],
 	)
-<<<<<<< HEAD
-=======
 
->>>>>>> naive
 	if bytes.Equal(peer1.handshake.presharedKey[:], make([]byte, 32)) {
 		t.Fatal("preshared nil")
 	}

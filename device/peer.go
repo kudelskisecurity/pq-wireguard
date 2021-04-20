@@ -117,8 +117,6 @@ func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
 	//var ss NoiseSymmetricKey
 	//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(pk) here
 	handshake.remoteStatic = pk
-<<<<<<< HEAD
-=======
 
 	var h KyberKEMPK
 	for i, b := range device.staticIdentity.publicKey {
@@ -127,26 +125,15 @@ func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
 	hpks := blake2s.Sum256(h[:])
 	copy(handshake.presharedKey[:], hpks[:])
 
->>>>>>> naive
 	handshake.mutex.Unlock()
 
 	// reset endpoint
-
 	peer.endpoint = nil
 
 	// add
 	device.peers.keyMap[hpk] = peer
 	device.peers.empty.Set(false)
 
-<<<<<<< HEAD
-	var h KyberKEMPK
-	for i, b := range device.staticIdentity.publicKey {
-		h[i] = b | handshake.remoteStatic[i]
-	}
-	hpks := blake2s.Sum256(h[:])
-	copy(handshake.presharedKey[:], hpks[:])
-=======
->>>>>>> naive
 	// start peer
 
 	if peer.device.isUp.Get() {
