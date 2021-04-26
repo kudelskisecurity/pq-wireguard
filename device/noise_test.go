@@ -137,7 +137,8 @@ func TestNoiseHandshake(t *testing.T) {
 	defer dev1.Close()
 	defer dev2.Close()
 
-	//fmt.Printf("pk %v\nsk %v\n", dev1.staticIdentity.publicKey[:100], dev1.staticIdentity.privateKey[:])
+	fmt.Printf("Dev1: %v\n", dev1.staticIdentity.publicKey[:8])
+	fmt.Printf("Dev2: %v\n", dev2.staticIdentity.publicKey[:8])
 	peer1, err := dev2.NewPeer(dev1.staticIdentity.publicKey)
 	if err != nil {
 		t.Fatal(err)
@@ -226,14 +227,10 @@ func TestNoiseHandshake(t *testing.T) {
 		t.Fatal("failed to derive keypair for peer 2", err)
 	}
 
-	/** can't code test but manualy tested and ok
-	assertEqual(
-		t,
-		peer1.keypairs.next.send,
-		peer2.keypairs.Current().receive)**/
-
 	key1 := peer1.keypairs.loadNext()
 	key2 := peer2.keypairs.current
+
+	fmt.Printf("The symmetric key were correctfully derived.\n")
 
 	// encrypting / decryption test
 
@@ -260,4 +257,6 @@ func TestNoiseHandshake(t *testing.T) {
 		assertNil(t, err)
 		assertEqual(t, out, testMsg)
 	}()
+
+	fmt.Printf("The first message was correctfully exchanged.\n")
 }

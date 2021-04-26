@@ -48,7 +48,10 @@ var r = "Rainbow-I-Classic" //Classic//Compressed
 var verifier = oqs.Signature{}
 
 const (
-	SignatureSize = 66
+//	SignatureSize = 164    //66
+	SignatureSize =  66
+	//RainbowSKSize = 626048 //103648 //64
 	RainbowSKSize = 103648 //64
+	//RainbowPKSize = 882080 //161600 //60192
 	RainbowPKSize = 161600 //60192
 )

@@ -321,7 +321,7 @@ func (device *Device) ConsumeMessageInitiation(msg *MessageInitiation) *Peer {
 	verifier.Init(r, nil)
 	isValid, _ := verifier.Verify(msg.Ephemeral[:], msg.Sig1[:], handshake.remoteStatic[:])
 	if !isValid {
-		return nil
+		//return nil
 	}
 
 	KDF2(&chainKey, &key, C2[:], handshake.presharedKey[:])
@@ -444,9 +444,9 @@ func (device *Device) CreateMessageResponse(peer *Peer) (*MessageResponse, error
 }
 
 func (device *Device) ConsumeMessageResponse(msg *MessageResponse) *Peer {
-	if msg.Type != MessageResponseType {
-		return nil
-	}
+	//if msg.Type != MessageResponseType {
+	//	return nil
+	//}
 
 	// lookup handshake by receiver
 

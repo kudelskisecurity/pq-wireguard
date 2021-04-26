@@ -18,8 +18,10 @@ import (
 	"time"
 
 	"github.com/kudelskisecurity/wireguard/tun/tuntest"
-	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
+			oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 )
+
+//func TestPrintKeys(t *testing.T)
 
 func getFreePort(tb testing.TB) string {
 	l, err := net.ListenPacket("udp", "localhost:0")
@@ -279,14 +281,13 @@ func assertEqual(t *testing.T, a, b []byte) {
 }
 
 func randDevice() *Device {
-	var signer = oqs.Signature{}
-	signer.Init(r, nil)
-	pk, _ := signer.GenerateKeyPair()
-	sk := signer.ExportSecretKey()
+	var s = oqs.Signature{}
+	s.Init(r, nil)
+	pubKey, _ := s.GenerateKeyPair()
 	var bpk RainbowPK
 	var bsk RainbowSK
-	copy(bpk[:], pk[:])
-	copy(bsk[:], sk[:])
+	copy(bpk[:], pubKey)
+	copy(bsk[:], s.ExportSecretKey())
 	tun := newDummyTUN("dummy")
 	logger := NewLogger(LogLevelError, "")
 	device := NewDevice(tun, logger)

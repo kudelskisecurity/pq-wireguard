@@ -16,6 +16,7 @@ import (
 	"github.com/kudelskisecurity/wireguard/ratelimiter"
 	"github.com/kudelskisecurity/wireguard/rwcancel"
 	"github.com/kudelskisecurity/wireguard/tun"
+	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 	"golang.org/x/crypto/blake2s"
 	"golang.org/x/crypto/sha3"
 	"golang.org/x/net/ipv4"
@@ -51,6 +52,7 @@ type Device struct {
 		privateKey RainbowSK
 		publicKey  RainbowPK
 		sigma      []byte //long term secret
+		s  oqs.Signature
 	}
 
 	peers struct {
