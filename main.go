@@ -44,22 +44,23 @@ func main() {
 
 	nextArg := 1
 
-	switch os.Args[nextArg] {
+	for nextArg < len(os.Args) {
+		switch os.Args[nextArg] {
 
-	case "-f", "--foreground":
-		foreground = true
-		nextArg++
+		case "-f", "--foreground":
+			foreground = true
+			nextArg++
 
-	case "-c", "--config_file":
-		config = true
-		nextArg++
-		configFile = os.Args[nextArg]
-		print(configFile)
-		nextArg++
+		case "-c", "--config_file":
+			config = true
+			nextArg++
+			configFile = os.Args[nextArg]
+			nextArg++
 
-	default:
-		interfaceName = os.Args[nextArg]
-		nextArg++
+		default:
+			interfaceName = os.Args[nextArg]
+			nextArg++
+		}
 	}
 
 	if !foreground {
