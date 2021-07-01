@@ -12,6 +12,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net"
+	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -289,6 +290,24 @@ func randDevice() *Device {
 	device.SetPrivateKey(bsk)
 	device.SetPublicKey(bpk)
 	return device
+}
+
+func TestUAPIconf(t *testing.T) {
+	tun := newDummyTUN("dummy")
+	logger := NewLogger(LogLevelVerbose, "")
+	device := NewDevice(tun, logger)
+
+	f, err := os.Open("../peer0.conf")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	err = device.IpcSetOperation(f)
+	if err != nil {
+		panic(err)
+	}
+
+	device.PrintDevice()
 }
 
 func BenchmarkLatency(b *testing.B) {
