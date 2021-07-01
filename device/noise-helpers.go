@@ -7,34 +7,16 @@ package device
 
 import (
 	"crypto/hmac"
-	"crypto/rand"
 	"crypto/subtle"
 	"hash"
 
-	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 	"golang.org/x/crypto/blake2s"
-	"golang.org/x/crypto/sha3"
 )
 
 /* KDF related functions.
  * HMAC-based Key Derivation Function (HKDF)
  * https://tools.ietf.org/html/rfc5869
  */
-
-func CPAEncaps(k *kyber.Kyber, pk KyberPKEPK) ([]byte, []byte) {
-	var msg []byte
-	rand.Read(msg[:])
-	kr := sha3.Sum512(msg[:])
-	c := k.Encrypt(kr[:32], kr[32:], pk[:])
-	ss := blake2s.Sum256(kr[:32])
-	return c, ss[:]
-}
-
-func CPADecaps(k *kyber.Kyber, c []byte, sk KyberPKESK) []byte {
-	kr := k.Decrypt(c, sk[:])
-	ss := blake2s.Sum256(kr)
-	return ss[:]
-}
 
 func HMAC1(sum *[blake2s.Size]byte, key, in0 []byte) {
 	mac := hmac.New(func() hash.Hash {

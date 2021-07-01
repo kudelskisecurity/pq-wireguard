@@ -48,8 +48,8 @@ type Device struct {
 
 	staticIdentity struct {
 		sync.RWMutex
-		privateKey KyberKEMSK
-		publicKey  KyberKEMPK
+		privateKey CCAKyberSK
+		publicKey  CCAKyberPK
 		sigma      []byte //long term secret
 	}
 
@@ -248,7 +248,7 @@ func (device *Device) IsUnderLoad() bool {
 }
 
 //Set the KEM keys
-func (device *Device) SetPrivateKey(sk KyberKEMSK) error {
+func (device *Device) SetPrivateKey(sk CCAKyberSK) error {
 	// lock required resources
 
 	device.staticIdentity.Lock()
@@ -292,7 +292,7 @@ func (device *Device) SetPrivateKey(sk KyberKEMSK) error {
 }
 
 //Set the KEM keys
-func (device *Device) SetPublicKey(pk KyberKEMPK) error {
+func (device *Device) SetPublicKey(pk CCAKyberPK) error {
 	// lock required resources
 
 	device.staticIdentity.Lock()
@@ -324,12 +324,12 @@ func (device *Device) SetPublicKey(pk KyberKEMPK) error {
 	expiredPeers := make([]*Peer, 0, len(device.peers.keyMap))
 	for _, peer := range device.peers.keyMap {
 		handshake := &peer.handshake
-		var h KyberKEMPK
+		var h CCAKyberPK
 		for i, b := range device.staticIdentity.publicKey {
 			h[i] = b | handshake.remoteStatic[i]
 		}
 		hpks := blake2s.Sum256(h[:])
-		copy(handshake.presharedKey[:],hpks[:])
+		copy(handshake.presharedKey[:], hpks[:])
 		//var ss NoiseSymmetricKey
 		//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(handshake.remoteStatic) //here
 		expiredPeers = append(expiredPeers, peer)
@@ -622,5 +622,5 @@ func (device *Device) BindClose() error {
 }
 
 func (device *Device) PrintDevice() {
-	device.log.Verbosef("Device\nSK: %x\nPK: %x\n", device.staticIdentity.privateKey, device.staticIdentity.publicKey)
+	device.log.Verbosef("Device info:\nSK: %x\nPK: %x\n", device.staticIdentity.privateKey, device.staticIdentity.publicKey)
 }

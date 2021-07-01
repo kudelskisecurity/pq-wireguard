@@ -165,9 +165,10 @@ func (device *Device) IpcSetOperation(r io.Reader) (err error) {
 }
 
 func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
+	device.log.Verbosef("here")
 	switch key {
 	case "private_key":
-		var sk KyberKEMSK
+		var sk CCAKyberSK
 		err := FromHex(sk[:], value)
 
 		if err != nil {
@@ -177,7 +178,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 		device.SetPrivateKey(sk)
 
 	case "public_key":
-		var pk KyberKEMPK
+		var pk CCAKyberPK
 		err := FromHex(pk[:], value)
 		if err != nil {
 			return ipcErrorf(ipc.IpcErrorInvalid, "failed to set public_key: %w", err)
@@ -222,7 +223,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 		device.RemoveAllPeers()
 
 	case "peer_key":
-		var publicKey KyberKEMPK
+		var publicKey CCAKyberPK
 		err := FromHex(publicKey[:], value)
 		if err != nil {
 			return ipcErrorf(ipc.IpcErrorInvalid, "failed to get peer by public key: %w", err)

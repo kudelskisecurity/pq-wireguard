@@ -278,9 +278,9 @@ func assertEqual(t *testing.T, a, b []byte) {
 }
 
 func randDevice() *Device {
-	pk, sk := k.KeyGen(nil)
-	var bpk KyberKEMPK
-	var bsk KyberKEMSK
+	pk, sk := ccaKyber.KeyGen(nil)
+	var bpk CCAKyberPK
+	var bsk CCAKyberSK
 	copy(bpk[:], pk[:])
 	copy(bsk[:], sk[:])
 	tun := newDummyTUN("dummy")

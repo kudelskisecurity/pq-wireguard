@@ -76,7 +76,7 @@ type Peer struct {
 	cookieGenerator CookieGenerator
 }
 
-func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
+func (device *Device) NewPeer(pk CCAKyberPK) (*Peer, error) {
 	if device.isClosed.Get() {
 		return nil, errors.New("device closed")
 	}
@@ -118,7 +118,7 @@ func (device *Device) NewPeer(pk KyberKEMPK) (*Peer, error) {
 	//handshake.precomputedStaticStatic = ss //device.staticIdentity.privateKey.sharedSecret(pk) here
 	handshake.remoteStatic = pk
 
-	var h KyberKEMPK
+	var h CCAKyberPK
 	for i, b := range device.staticIdentity.publicKey {
 		h[i] = b | handshake.remoteStatic[i]
 	}

@@ -83,7 +83,7 @@ func main() {
 
 	switch os.Args[nextArg] {
 
-	case "-c", "--setconf":
+	case "-c", "--config_file":
 		config = true
 		nextArg++
 		configFile = os.Args[nextArg]

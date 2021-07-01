@@ -18,8 +18,8 @@ func TestCookieMAC1(t *testing.T) {
 		checker   CookieChecker
 	)
 
-	pk, _ := k.KeyGen(nil)
-	var bpk KyberKEMPK
+	pk, _ := ccaKyber.KeyGen(nil)
+	var bpk CCAKyberPK
 	copy(bpk[:], pk)
 	generator.Init(bpk)
 	checker.Init(bpk)
