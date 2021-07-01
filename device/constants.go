@@ -42,5 +42,20 @@ const (
 	MaxPeers           = 1 << 16     // maximum number of configured peers
 )
 
-var k = kyber.NewKyber512()
-var kTweaked = kyber.NewTweakedKyber512()
+//The CCA secure KEM instance to be used
+var ccaKyber = kyber.NewKyber512()
+
+const (
+	sizeCCAKyberPK = kyber.Kyber512SizePK
+	sizeCCAKyberSK = kyber.Kyber512SizeSK
+	sizeCCAKyberC  = kyber.Kyber512SizeC
+)
+
+//The CPA secure KEM instance to be used
+var cpaKyber = kyber.NewTweakedKyber512()
+
+const (
+	sizeCPAKyberPK = kyber.Kyber512SizePK
+	sizeCPAKyberC  = kyber.KyberTweaked512SizeC
+	sizeCPAKyberSK = kyber.Kyber512SizePKESK
+)

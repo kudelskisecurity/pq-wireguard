@@ -8,18 +8,16 @@ package device
 import (
 	"crypto/subtle"
 	"encoding/hex"
-
-	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
 )
 
 type (
 	NoiseNonce uint64 // padded to 12-bytes
 
-	KyberPKEPK [kyber.Kyber512SizePK]byte
-	KyberPKESK [kyber.Kyber512SizePKESK]byte //kyber.Kyber512SizePKESK undefined ??
+	CPAKyberPK [sizeCPAKyberPK]byte
+	CPAKyberSK [sizeCPAKyberSK]byte
 
-	KyberKEMPK [kyber.Kyber512SizePK]byte
-	KyberKEMSK [kyber.Kyber512SizeSK]byte
+	CCAKyberPK [sizeCCAKyberPK]byte
+	CCAKyberSK [sizeCCAKyberSK]byte
 )
 
 func loadExactHex(dst []byte, src string) error {
@@ -31,12 +29,12 @@ func loadExactHex(dst []byte, src string) error {
 	return nil
 }
 
-func (key KyberKEMSK) IsZero() bool {
-	var zero KyberKEMSK
+func (key CCAKyberSK) IsZero() bool {
+	var zero CCAKyberSK
 	return key.Equals(zero)
 }
 
-func (key KyberKEMSK) Equals(tar KyberKEMSK) bool {
+func (key CCAKyberSK) Equals(tar CCAKyberSK) bool {
 	return subtle.ConstantTimeCompare(key[:], tar[:]) == 1
 }
 
@@ -48,11 +46,11 @@ func FromHex(dst []byte, src string) error {
 	return loadExactHex(dst, src)
 }
 
-func (key KyberKEMPK) IsZero() bool {
-	var zero KyberKEMPK
+func (key CCAKyberPK) IsZero() bool {
+	var zero CCAKyberPK
 	return key.Equals(zero)
 }
 
-func (key KyberKEMPK) Equals(tar KyberKEMPK) bool {
+func (key CCAKyberPK) Equals(tar CCAKyberPK) bool {
 	return subtle.ConstantTimeCompare(key[:], tar[:]) == 1
 }

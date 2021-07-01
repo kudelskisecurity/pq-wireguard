@@ -42,7 +42,7 @@ type CookieGenerator struct {
 }
 
 //static pk as input
-func (st *CookieChecker) Init(pk KyberKEMPK) {
+func (st *CookieChecker) Init(pk CCAKyberPK) {
 	st.Lock()
 	defer st.Unlock()
 
@@ -171,7 +171,7 @@ func (st *CookieChecker) CreateReply(
 }
 
 //static pk as input
-func (st *CookieGenerator) Init(pk KyberKEMPK) {
+func (st *CookieGenerator) Init(pk CCAKyberPK) {
 	st.Lock()
 	defer st.Unlock()
 
