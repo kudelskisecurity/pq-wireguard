@@ -1,10 +1,14 @@
-# PQ-Go-WireGuard
+# PQ-WireGuard
 
-Integration of https://gitlab.kudelski.com/ks-fun/go-pqs in https://github.com/WireGuard/wireguard-go following https://eprint.iacr.org/2020/379.pdf.
+In this branch, we integrate our [tweaked implementation of the crystals post-quantum algorithms](https://github.com/kudelskisecurity/crystals-go/tree/tweakedKyber) and the [lib-oqs implementation of the Rainbow scheme](https://github.com/open-quantum-safe/liboqs-go) in the [Go implementation of Wireguard](https://github.com/WireGuard/wireguard-go) following the [del Pino contruction](https://eprint.iacr.org/2016/435).
+Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecurity.com/15437) for more information.
 
-Original README.md:
+## WIP
 
-# Go Implementation of [WireGuard](https://www.wireguard.com/)
+We are currently working on overriding the [`wg(8)` commands](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to allow the users to input Kyber or Rainbow keys.
+For now, the key pair and the peers' key must be given whithin a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/tweakedRainbow/peer0.conf)) to showcase the accepted format.
+
+## README from the Go Implementation of [WireGuard](https://www.wireguard.com/)
 
 This is an implementation of WireGuard in Go.
 
