@@ -1,4 +1,4 @@
-# PQ-Go-WireGuard
+# PQ-WireGuard
 
 In this branch, we integrate https://gitlab.kudelski.com/ks-fun/go-pqs in https://github.com/WireGuard/wireguard-go following https://eprint.iacr.org/2020/379.pdf.
 Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecurity.com/15437) for more information.
