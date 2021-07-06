@@ -7,29 +7,18 @@ package device
 
 import (
 	"crypto/subtle"
-	"encoding/hex"
-
-	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
+	b64 "encoding/base64"
 )
 
 type (
 	NoiseNonce uint64 // padded to 12-bytes
 
-	KyberPK [kyber.Kyber512SizePK]byte
-	KyberSK [kyber.Kyber512SizePKESK]byte //kyber.Kyber512SizePKESK undefined ??
+	RainbowPK [sizeRainbowPK]byte
+	RainbowSK [sizeRainbowSK]byte
 
-	RainbowPK [RainbowPKSize]byte
-	RainbowSK [RainbowSKSize]byte
+	CPAKyberPK [sizeCPAKyberPK]byte
+	CPAKyberSK [sizeCPAKyberSK]byte
 )
-
-func loadExactHex(dst []byte, src string) error {
-	slice, err := hex.DecodeString(src)
-	if err != nil {
-		return err
-	}
-	copy(dst, slice)
-	return nil
-}
 
 func (key RainbowSK) IsZero() bool {
 	var zero RainbowSK
@@ -40,12 +29,14 @@ func (key RainbowSK) Equals(tar RainbowSK) bool {
 	return subtle.ConstantTimeCompare(key[:], tar[:]) == 1
 }
 
-func KeyToHex(key []byte) string {
-	return hex.EncodeToString(key[:])
+func ToB64(key []byte) string {
+	return b64.StdEncoding.EncodeToString(key)
 }
 
-func FromHex(dst []byte, src string) error {
-	return loadExactHex(dst, src)
+func FromB64(dst []byte, src string) error {
+	srcDec, err := b64.StdEncoding.DecodeString(src)
+	copy(dst, srcDec)
+	return err
 }
 
 func (key RainbowPK) IsZero() bool {

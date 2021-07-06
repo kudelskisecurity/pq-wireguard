@@ -7,6 +7,8 @@ package device
 
 import (
 	"testing"
+
+	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 )
 
 func TestCookieMAC1(t *testing.T) {
@@ -18,7 +20,9 @@ func TestCookieMAC1(t *testing.T) {
 		checker   CookieChecker
 	)
 
-	pk, _ := k.KeyGen(nil)
+	s := oqs.Signature{}
+	s.Init(r, nil)
+	pk, _ := s.GenerateKeyPair()
 	var bpk RainbowPK
 	copy(bpk[:], pk)
 	generator.Init(bpk)

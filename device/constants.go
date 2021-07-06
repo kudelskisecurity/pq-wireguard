@@ -43,15 +43,24 @@ const (
 	MaxPeers           = 1 << 16     // maximum number of configured peers
 )
 
-var k = kyber.NewTweakedKyber512()
+//The DSA instance to be used
 var r = "Rainbow-I-Classic" //Classic//Compressed
 var verifier = oqs.Signature{}
 
 const (
-//	SignatureSize = 164    //66
-	SignatureSize =  66
+	//	SignatureSize = 164    //66
+	sizeRainbowSig = 66
 	//RainbowSKSize = 626048 //103648 //64
-	RainbowSKSize = 103648 //64
+	sizeRainbowSK = 103648 //64
 	//RainbowPKSize = 882080 //161600 //60192
-	RainbowPKSize = 161600 //60192
+	sizeRainbowPK = 161600 //60192
+)
+
+//The CPA secure KEM instance to be used
+var cpaKyber = kyber.NewTweakedKyber512()
+
+const (
+	sizeCPAKyberPK = kyber.Kyber512SizePK
+	sizeCPAKyberC  = kyber.KyberTweaked512SizeC
+	sizeCPAKyberSK = kyber.Kyber512SizePKESK
 )

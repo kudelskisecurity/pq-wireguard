@@ -31,65 +31,40 @@ const (
 	ENV_WG_PROCESS_FOREGROUND = "WG_PROCESS_FOREGROUND"
 )
 
-func warning() {
-	if runtime.GOOS != "linux" || os.Getenv(ENV_WG_PROCESS_FOREGROUND) == "1" {
-		return
-	}
-
-	fmt.Fprintln(os.Stderr, "┌───────────────────────────────────────────────────┐")
-	fmt.Fprintln(os.Stderr, "│                                                   │")
-	fmt.Fprintln(os.Stderr, "│   Running this software on Linux is unecessary,   │")
-	fmt.Fprintln(os.Stderr, "│   because the Linux kernel has built-in first     │")
-	fmt.Fprintln(os.Stderr, "│   class support for WireGuard, which will be      │")
-	fmt.Fprintln(os.Stderr, "│   faster, slicker, and better integrated. For     │")
-	fmt.Fprintln(os.Stderr, "│   information on installing the kernel module,    │")
-	fmt.Fprintln(os.Stderr, "│   please visit: <https://wireguard.com/install>.  │")
-	fmt.Fprintln(os.Stderr, "│                                                   │")
-	fmt.Fprintln(os.Stderr, "└───────────────────────────────────────────────────┘")
-}
-
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "--version" {
 		fmt.Printf("wireguard-go v%s\n\nUserspace WireGuard daemon for %s-%s.\nInformation available at https://www.wireguard.com.\nCopyright (C) Jason A. Donenfeld <Jason@zx2c4.com>.\n", device.WireGuardGoVersion, runtime.GOOS, runtime.GOARCH)
 		return
 	}
 
-	warning()
-
-	var foreground bool
+	var foreground bool = false
 	var interfaceName string
-	var config bool
+	var config bool = false
 	var configFile string
 
 	nextArg := 1
 
-	switch os.Args[nextArg] {
+	for nextArg < len(os.Args) {
+		switch os.Args[nextArg] {
 
-	case "-f", "--foreground":
-		foreground = true
-		nextArg++
-		interfaceName = os.Args[nextArg]
-		nextArg++
+		case "-f", "--foreground":
+			foreground = true
+			nextArg++
 
-	default:
-		foreground = false
-		interfaceName = os.Args[nextArg]
-		nextArg++
+		case "-c", "--config_file":
+			config = true
+			nextArg++
+			configFile = os.Args[nextArg]
+			nextArg++
+
+		default:
+			interfaceName = os.Args[nextArg]
+			nextArg++
+		}
 	}
 
 	if !foreground {
 		foreground = os.Getenv(ENV_WG_PROCESS_FOREGROUND) == "1"
-	}
-
-	switch os.Args[nextArg] {
-
-	case "-c", "--setconf":
-		config = true
-		nextArg++
-		configFile = os.Args[nextArg]
-
-	default:
-		config = false
 	}
 
 	// get log level (default: info)

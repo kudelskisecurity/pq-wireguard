@@ -137,8 +137,8 @@ func TestNoiseHandshake(t *testing.T) {
 	defer dev1.Close()
 	defer dev2.Close()
 
-	fmt.Printf("Dev1: %v\n", dev1.staticIdentity.publicKey[:8])
-	fmt.Printf("Dev2: %v\n", dev2.staticIdentity.publicKey[:8])
+	fmt.Printf("Dev1: %v\nDev2: %v\n", dev1.staticIdentity.publicKey[:8], dev2.staticIdentity.publicKey[:8])
+
 	peer1, err := dev2.NewPeer(dev1.staticIdentity.publicKey)
 	if err != nil {
 		t.Fatal(err)

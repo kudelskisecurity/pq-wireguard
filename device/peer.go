@@ -128,7 +128,6 @@ func (device *Device) NewPeer(pk RainbowPK) (*Peer, error) {
 	handshake.mutex.Unlock()
 
 	// reset endpoint
-
 	peer.endpoint = nil
 
 	// add

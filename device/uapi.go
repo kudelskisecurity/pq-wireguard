@@ -76,7 +76,7 @@ func (device *Device) IpcGetOperation(w io.Writer) error {
 		// serialize device related values
 
 		if !device.staticIdentity.privateKey.IsZero() {
-			sendf("private_key=%s", KeyToHex(device.staticIdentity.privateKey[:]))
+			sendf("private_key=%s", ToB64(device.staticIdentity.privateKey[:]))
 		}
 		if device.net.port != 0 {
 			sendf("listen_port=%d", device.net.port)
@@ -85,7 +85,7 @@ func (device *Device) IpcGetOperation(w io.Writer) error {
 			sendf("fwmark=%d", device.net.fwmark)
 		}
 		if !device.staticIdentity.publicKey.IsZero() {
-			sendf("public_key=%s", KeyToHex(device.staticIdentity.publicKey[:]))
+			sendf("public_key=%s", ToB64(device.staticIdentity.publicKey[:]))
 		}
 		// serialize each peer state
 
@@ -93,8 +93,8 @@ func (device *Device) IpcGetOperation(w io.Writer) error {
 			peer.RLock()
 			defer peer.RUnlock()
 
-			sendf("peer_key=%s", KeyToHex(peer.handshake.remoteStatic[:]))
-			sendf("preshared_key=%s", KeyToHex(peer.handshake.presharedKey[:]))
+			sendf("peer_key=%s", ToB64(peer.handshake.remoteStatic[:]))
+			sendf("preshared_key=%s", ToB64(peer.handshake.presharedKey[:]))
 			sendf("protocol_version=1")
 			if peer.endpoint != nil {
 				sendf("endpoint=%s", peer.endpoint.DstToString())
@@ -139,27 +139,30 @@ func (device *Device) IpcSetOperation(r io.Reader) (err error) {
 	peer := new(ipcSetPeer)
 
 	scanner := bufio.NewScanner(r)
+	//scanner := bufio.NewReader(r)
 	for scanner.Scan() {
+		var err error
+		//line, err := scanner.ReadString('\n')
 		line := scanner.Text()
-		if line == "" {
-			// Blank line means terminate operation.
+		if err == io.EOF || line == "" {
+			// Blank line or EOF terminate operation.
 			return nil
 		}
-		parts := strings.Split(line, "=")
+		if err != nil {
+			return ipcErrorf(ipc.IpcErrorIO, "failed to read input: %w", err)
+		}
+		parts := strings.SplitN(line, "=", 2)
 		if len(parts) != 2 {
 			return ipcErrorf(ipc.IpcErrorProtocol, "failed to parse line %q, found %d =-separated parts, want 2", line, len(parts))
 		}
 		key := parts[0]
 		value := parts[1]
+		fmt.Printf("key %s, value %+v...%+v\n", key, value[:3], value[len(value)-3:])
 
 		err = device.handleLine(peer, key, value)
 		if err != nil {
 			return err
 		}
-	}
-
-	if err = scanner.Err(); err != nil {
-		return ipcErrorf(ipc.IpcErrorIO, "failed to read input: %w", err)
 	}
 	return nil
 }
@@ -168,7 +171,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 	switch key {
 	case "private_key":
 		var sk RainbowSK
-		err := FromHex(sk[:], value)
+		err := FromB64(sk[:], value)
 
 		if err != nil {
 			return ipcErrorf(ipc.IpcErrorInvalid, "failed to set private_key: %w", err)
@@ -178,7 +181,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 
 	case "public_key":
 		var pk RainbowPK
-		err := FromHex(pk[:], value)
+		err := FromB64(pk[:], value)
 		if err != nil {
 			return ipcErrorf(ipc.IpcErrorInvalid, "failed to set public_key: %w", err)
 		}
@@ -223,7 +226,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 
 	case "peer_key":
 		var publicKey RainbowPK
-		err := FromHex(publicKey[:], value)
+		err := FromB64(publicKey[:], value)
 		if err != nil {
 			return ipcErrorf(ipc.IpcErrorInvalid, "failed to get peer by public key: %w", err)
 		}
@@ -277,7 +280,7 @@ func (device *Device) handleLine(peer *ipcSetPeer, key, value string) error {
 		device.log.Verbosef("%v - UAPI: Updating preshared key", peer.Peer)
 
 		peer.handshake.mutex.Lock()
-		err := FromHex(peer.handshake.presharedKey[:], value)
+		err := FromB64(peer.handshake.presharedKey[:], value)
 		peer.handshake.mutex.Unlock()
 
 		if err != nil {

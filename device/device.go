@@ -52,7 +52,7 @@ type Device struct {
 		privateKey RainbowSK
 		publicKey  RainbowPK
 		sigma      []byte //long term secret
-		s  oqs.Signature
+		s          oqs.Signature
 	}
 
 	peers struct {
@@ -624,5 +624,5 @@ func (device *Device) BindClose() error {
 }
 
 func (device *Device) PrintDevice() {
-	device.log.Verbosef("Device\nSK: %x\nPK: %x\n", device.staticIdentity.privateKey[:8], device.staticIdentity.publicKey[:8])
+	device.log.Verbosef("Device info:\nSK: %x\nPK: %x\npeer: %+v\n", device.staticIdentity.privateKey[:8], device.staticIdentity.publicKey[:8], device.peers.keyMap)
 }

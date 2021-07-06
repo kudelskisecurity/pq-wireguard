@@ -12,12 +12,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kudelskisecurity/wireguard/tai64n"
+	oqs "github.com/open-quantum-safe/liboqs-go/oqs"
 	"golang.org/x/crypto/blake2s"
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/crypto/poly1305"
-	kyber "github.com/kudelskisecurity/crystals-go/crystals-kyber"
-		oqs "github.com/open-quantum-safe/liboqs-go/oqs"
-	"github.com/kudelskisecurity/wireguard/tai64n"
 )
 
 type handshakeState int
@@ -53,7 +52,7 @@ const (
 	WGIdentifier      = "WireGuard v1 zx2c4 Jason@zx2c4.com"
 	WGLabelMAC1       = "mac1----"
 	WGLabelCookie     = "cookie--"
-	PlaceHolder       = 32 //to modif
+	PlaceHolder       = 32
 )
 
 const (
@@ -64,13 +63,13 @@ const (
 )
 
 const (
-	MessageInitiationSize      = 2*4 + kyber.Kyber512SizePK + blake2s.Size + poly1305.TagSize + tai64n.TimestampSize + poly1305.TagSize + SignatureSize + 2*blake2s.Size128 //2388                                          // size of handshake initiation message ere add SIZEC
-	MessageResponseSize        = 3*4 + SignatureSize + kyber.KyberTweaked512SizeC + poly1305.TagSize + 2*blake2s.Size128                                                    //2260                                                                                                     //92 + 2*utils.SIZEC                            // size of response message
-	MessageCookieReplySize     = 64                                                                                                                                         // size of cookie reply message
-	MessageTransportHeaderSize = 16                                                                                                                                         // size of data preceding content in transport message
-	MessageTransportSize       = MessageTransportHeaderSize + poly1305.TagSize                                                                                              // size of empty transport
-	MessageKeepaliveSize       = MessageTransportSize                                                                                                                       // size of keepalive
-	MessageHandshakeSize       = MessageInitiationSize                                                                                                                      // size of largest handshake related message
+	MessageInitiationSize      = 2*4 + sizeCPAKyberPK + blake2s.Size + poly1305.TagSize + tai64n.TimestampSize + poly1305.TagSize + sizeRainbowSig + 2*blake2s.Size128 //2388                                          // size of handshake initiation message ere add SIZEC
+	MessageResponseSize        = 3*4 + sizeRainbowSig + sizeCPAKyberC + poly1305.TagSize + 2*blake2s.Size128                                                           //2260                                                                                                     //92 + 2*utils.SIZEC                            // size of response message
+	MessageCookieReplySize     = 64                                                                                                                                    // size of cookie reply message
+	MessageTransportHeaderSize = 16                                                                                                                                    // size of data preceding content in transport message
+	MessageTransportSize       = MessageTransportHeaderSize + poly1305.TagSize                                                                                         // size of empty transport
+	MessageKeepaliveSize       = MessageTransportSize                                                                                                                  // size of keepalive
+	MessageHandshakeSize       = MessageInitiationSize                                                                                                                 // size of largest handshake related message
 )
 
 const (
@@ -88,10 +87,10 @@ const (
 type MessageInitiation struct {
 	Type      uint32
 	Sender    uint32
-	Ephemeral KyberPK
+	Ephemeral CPAKyberPK
 	Static    [blake2s.Size + poly1305.TagSize]byte
 	Timestamp [tai64n.TimestampSize + poly1305.TagSize]byte
-	Sig1      [SignatureSize]byte
+	Sig1      [sizeRainbowSig]byte
 	MAC1      [blake2s.Size128]byte
 	MAC2      [blake2s.Size128]byte
 }
@@ -100,8 +99,8 @@ type MessageResponse struct {
 	Type     uint32
 	Sender   uint32
 	Receiver uint32
-	Ct2      [kyber.KyberTweaked512SizeC]byte
-	Sig3     [SignatureSize]byte
+	Ct2      [sizeCPAKyberC]byte
+	Sig3     [sizeRainbowSig]byte
 	Empty    [poly1305.TagSize]byte
 	MAC1     [blake2s.Size128]byte
 	MAC2     [blake2s.Size128]byte
@@ -127,11 +126,11 @@ type Handshake struct {
 	hash            [blake2s.Size]byte // hash value
 	chainKey        [blake2s.Size]byte // chain key
 	presharedKey    [blake2s.Size]byte // H(psk)
-	localEphemeral  KyberSK            // ephemeral secret key kyber PKE ske
+	localEphemeral  CPAKyberSK         // ephemeral secret key kyber PKE ske
 	localIndex      uint32             // used to clear hash-table
 	remoteIndex     uint32             // index for sending
 	remoteStatic    RainbowPK          // long term key
-	remoteEphemeral KyberPK            // ephemeral public key
+	remoteEphemeral CPAKyberPK         // ephemeral public key
 	//precomputedStaticStatic   [PlaceHolder]byte  // precomputed shared secret
 	lastTimestamp             tai64n.Timestamp
 	lastInitiationConsumption time.Time
@@ -194,10 +193,10 @@ func (device *Device) CreateMessageInitiation(peer *Peer) (*MessageInitiation, e
 	var err error
 	handshake.hash = InitialHash
 	handshake.chainKey = InitialChainKey
-	pk, sk := k.PKEKeyGen(nil)
-	var bsk KyberSK
+	pk, sk := cpaKyber.CPAKeyGen()
+	var bsk CPAKyberSK
 	copy(bsk[:], sk)
-	var bpk KyberPK
+	var bpk CPAKyberPK
 	copy(bpk[:], pk)
 
 	handshake.localEphemeral = bsk
@@ -403,7 +402,7 @@ func (device *Device) CreateMessageResponse(peer *Peer) (*MessageResponse, error
 	var rr [4]byte
 	rand.Read(rr[:])
 	//encSeed := sha3.Sum512(append(device.staticIdentity.sigma, rr[:]...))
-	ct2, shk2 := k.CPAEncaps(handshake.remoteEphemeral[:])
+	ct2, shk2 := cpaKyber.CPAEncaps(handshake.remoteEphemeral[:])
 	var s = oqs.Signature{}
 	s.Init(r, device.staticIdentity.privateKey[:])
 	sig3, _ := s.Sign(ct2[:])
@@ -481,7 +480,7 @@ func (device *Device) ConsumeMessageResponse(msg *MessageResponse) *Peer {
 		defer device.staticIdentity.RUnlock()
 
 		//C4 and H5 in handshake
-		shk2 := k.CPADecaps(msg.Ct2[:], handshake.localEphemeral[:])
+		shk2 := cpaKyber.CPADecaps(handshake.localEphemeral[:], msg.Ct2[:])
 
 		mixKey(&chainKey, &chainKey, msg.Ct2[:]) //c6
 		mixKey(&chainKey, &chainKey, shk2)       //c7

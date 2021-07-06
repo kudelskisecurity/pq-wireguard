@@ -7,7 +7,6 @@ package device
 
 import (
 	"crypto/hmac"
-
 	"crypto/subtle"
 	"hash"
 
