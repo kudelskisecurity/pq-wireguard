@@ -6,7 +6,7 @@ Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecu
 ## WIP
 
 We are currently working on overriding the [`wg(8)` commands](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to allow the users to input Kyber keys.
-For now, the key pair and the peers' key must be given whithin a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/naive/peer0.conf)) to showcase the accepted format.
+For now, the key pair and the peers' key must be given whithin a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/tweakedKyber/peer0.conf)) to showcase the accepted format.
 
 ## README from the Go Implementation of [WireGuard](https://www.wireguard.com/)
 
