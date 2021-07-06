@@ -1,6 +1,6 @@
 # PQ-WireGuard
 
-In this branch, we integrate our [implementation of the crystals post-quantum algorithms](https://github.com/kudelskisecurity/crystals-go/tree/tweakedKyber) in the [Go implementation of Wireguard](https://github.com/WireGuard/wireguard-go) following the [Fujioka contruction](https://link.springer.com/chapter/10.1007/978-3-642-30057-8_28).
+In this branch, we integrate our [implementation of the crystals post-quantum algorithms](https://github.com/kudelskisecurity/crystals-go) in the [Go implementation of Wireguard](https://github.com/WireGuard/wireguard-go) following the [Fujioka contruction](https://link.springer.com/chapter/10.1007/978-3-642-30057-8_28).
 Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecurity.com/15437) for more information.
 
 ## WIP
