@@ -51,12 +51,6 @@ The port to be used can be randomly assigned among the free ports.
 
 The protocol version is set to 1, the booleans `replace_allowed_ips` and `replace_peers` are set to true.
 
-## Demo
-
-You can watch below the video of two peers being configured side-by-side.
-
-TODO: add video.
-
 ## License
 
     Copyright (C) 2017-2020 WireGuard LLC. All Rights Reserved.
