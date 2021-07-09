@@ -626,3 +626,10 @@ func (device *Device) BindClose() error {
 func (device *Device) PrintDevice() {
 	device.log.Verbosef("Device info:\nSK: %x\nPK: %x\npeer: %+v\n", device.staticIdentity.privateKey[:8], device.staticIdentity.publicKey[:8], device.peers.keyMap)
 }
+
+func GenerateDeviceKeys() ([]byte, []byte){
+	var s = oqs.Signature{}
+	s.Init(r, nil)
+	pubKey, _ := s.GenerateKeyPair()
+	return pubKey, s.ExportSecretKey()
+}
