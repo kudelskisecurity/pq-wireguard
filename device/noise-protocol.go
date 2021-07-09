@@ -207,7 +207,7 @@ func (device *Device) CreateMessageInitiation(peer *Peer) (*MessageInitiation, e
 	var ri [4]byte
 	rand.Read(ri[:])
 
-	encSeed := sha3.Sum512(append(device.staticIdentity.sigma, ri[:]...))
+	encSeed := sha3.Sum256(append(device.staticIdentity.sigma, ri[:]...))
 	//KDF1(encSeed[:blake2s.Size], device.staticIdentity.sigma, ri[:])
 	ct1, shk1 := ccaKyber.Encaps(handshake.remoteStatic[:], encSeed[:])
 	msg := MessageInitiation{
@@ -276,7 +276,6 @@ func (device *Device) ConsumeMessageInitiation(msg *MessageInitiation) *Peer {
 
 	device.staticIdentity.RLock()
 	defer device.staticIdentity.RUnlock()
-
 	mixHash(&hash, &InitialHash, device.staticIdentity.publicKey[:])
 	//H2
 	mixHash(&hash, &hash, msg.Ephemeral[:])
@@ -291,12 +290,12 @@ func (device *Device) ConsumeMessageInitiation(msg *MessageInitiation) *Peer {
 	var hpeerPK [blake2s.Size]byte
 	var key [chacha20poly1305.KeySize]byte
 	shk1 := ccaKyber.Decaps(device.staticIdentity.privateKey[:], msg.Ct1[:])
+
 	KDF2(&chainKey, &key, C2[:], shk1)
 	//C3
 	aead, _ := chacha20poly1305.New(key[:])
 	_, err = aead.Open(hpeerPK[:0], ZeroNonce[:], msg.Static[:], hash[:])
 	if err != nil {
-		println("first mac not ok")
 		return nil
 	}
 	mixHash(&hash, &hash, msg.Static[:])
@@ -379,6 +378,7 @@ func (device *Device) CreateMessageResponse(peer *Peer) (*MessageResponse, error
 		return nil, errors.New("handshake initiation must be consumed first")
 	}
 
+
 	// assign index
 
 	var err error
@@ -395,18 +395,19 @@ func (device *Device) CreateMessageResponse(peer *Peer) (*MessageResponse, error
 
 	var rr [4]byte
 	rand.Read(rr[:])
-	encSeed := sha3.Sum512(append(device.staticIdentity.sigma, rr[:]...))
+	encSeed := sha3.Sum256(append(device.staticIdentity.sigma, rr[:]...))
 	ct2, shk2 := cpaKyber.CPAEncaps(handshake.remoteEphemeral[:])
-	ct3, shk3 := ccaKyber.Encaps(handshake.remoteStatic[:], encSeed[:])
-	copy(msg.Ct2[:], ct2[:])
-	copy(msg.Ct3[:], ct3[:])
-
 	//c4 and h5 in handshake
-	handshake.mixKey(ct2)  //c6
+	handshake.mixKey(ct2) //c6
+	copy(msg.Ct2[:], ct2[:])
 	handshake.mixKey(shk2) //c7
+	handshake.mixHash(ct2) //H6
+
+	ct3, shk3 := ccaKyber.Encaps(handshake.remoteStatic[:], encSeed[:])
+	fmt.Printf("Create: shk3 %+v\n", shk3)
+	copy(msg.Ct3[:], ct3[:])
 	handshake.mixKey(shk3) //c8
 
-	handshake.mixHash(ct2) //H6
 
 	// add preshared key
 
@@ -423,11 +424,9 @@ func (device *Device) CreateMessageResponse(peer *Peer) (*MessageResponse, error
 
 	handshake.mixHash(tau[:]) //h9
 
-	func() {
-		aead, _ := chacha20poly1305.New(key[:])
-		aead.Seal(msg.Empty[:0], ZeroNonce[:], nil, handshake.hash[:])
-		handshake.mixHash(msg.Empty[:]) //H10
-	}()
+	aead, _ := chacha20poly1305.New(key[:])
+	aead.Seal(msg.Empty[:0], ZeroNonce[:], nil, handshake.hash[:])
+	handshake.mixHash(msg.Empty[:]) //H10
 
 	handshake.state = handshakeResponseCreated
 
@@ -466,6 +465,7 @@ func (device *Device) ConsumeMessageResponse(msg *MessageResponse) *Peer {
 		copy(chainKey[:], handshake.chainKey[:])
 		copy(hash[:], handshake.hash[:])
 
+
 		// lock private key for reading
 
 		device.staticIdentity.RLock()
@@ -475,16 +475,17 @@ func (device *Device) ConsumeMessageResponse(msg *MessageResponse) *Peer {
 		shk2 := cpaKyber.CPADecaps(handshake.localEphemeral[:], msg.Ct2[:])
 
 		mixKey(&chainKey, &chainKey, msg.Ct2[:]) //c6
-		mixKey(&chainKey, &chainKey, shk2)       //c7
-		shk3 := ccaKyber.Decaps(device.staticIdentity.privateKey[:], msg.Ct3[:])
-		mixKey(&chainKey, &chainKey, shk3) //c8
-
+		mixKey(&chainKey, &chainKey, shk2) //c7
 		mixHash(&hash, &hash, msg.Ct2[:]) //H6
 
+		shk3 := ccaKyber.Decaps(device.staticIdentity.privateKey[:], msg.Ct3[:])
+		fmt.Printf("Response: shk3 %+v\n", shk3)
+		mixKey(&chainKey, &chainKey, shk3) //c8
 		// add preshared key (psk)
 
 		var tau [blake2s.Size]byte
 		var key [chacha20poly1305.KeySize]byte
+
 		KDF3(
 			&chainKey, //c9
 			&tau,      //KDF2(c8, psk)
