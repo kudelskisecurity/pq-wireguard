@@ -39,6 +39,17 @@ See the original wireguard-go [README](https://git.zx2c4.com/wireguard-go/REAMDE
 
 To run with more logging you may set the environment variable `LOG_LEVEL=debug`.
 
+## Generating the .conf file
+
+The public and private keys can be generated and printed using the `--keygen` flag.
+```
+$ ./wireguard --keygen
+```
+
+The IP address to use as endpoint can be extracted using the `ip addr` command.
+The port to be used can be randomly assigned among the free ports.
+The protocol version is set to 1, the booleans `replace_allowed_ips` and `replace_peers` are set to true.
+
 ## Demo
 
 You can watch below the video of two peers being configured side-by-side.
