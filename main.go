@@ -37,6 +37,13 @@ func main() {
 		return
 	}
 
+	if len(os.Args) == 2 && os.Args[1] == "--keygen" {
+		pk, sk := device.GenerateDeviceKeys()
+		fmt.Printf("public_key=%x\n", pk)
+		fmt.Printf("private_key=%x\n", sk)
+		return
+	}
+
 	var foreground bool = false
 	var interfaceName string
 	var config bool = false

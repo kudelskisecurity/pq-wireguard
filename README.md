@@ -6,18 +6,25 @@ Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecu
 ## WIP
 
 We are currently working on overriding the [`wg(8)` commands](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to allow the users to input Kyber keys.
-For now, the key pair and the peers' key must be given whithin a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/naive/peer0.conf)) to showcase the accepted format.
+For now, the key pair and the peers' key must be given within a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/naive/peer0.conf)) to showcase the accepted format and required fields.
 
-## README from the Go Implementation of [WireGuard](https://www.wireguard.com/)
 
-This is an implementation of WireGuard in Go.
+## Building
+
+This requires an installation of [go](https://golang.org) ≥ 1.13.
+
+```
+$ git clone https://github.com/kudelskisecurity/pq-wireguard
+$ cd pq-wireguard
+$ go build
+```
 
 ## Usage
 
 Most Linux kernel WireGuard users are used to adding an interface with `ip link add wg0 type wireguard`. With wireguard-go, instead simply run:
 
 ```
-$ wireguard-go wg0
+$ ./wireguard -c peerX.conf wg0
 ```
 
 This will create an interface and fork into the background. To remove the interface, use the usual `ip link del wg0`, or if your system does not support removing interfaces directly, you may instead remove the control socket via `rm -f /var/run/wireguard/wg0.sock`, which will result in wireguard-go shutting down.
@@ -25,44 +32,30 @@ This will create an interface and fork into the background. To remove the interf
 To run wireguard-go without forking to the background, pass `-f` or `--foreground`:
 
 ```
-$ wireguard-go -f wg0
+$ ./wireguard -f -c peerX.conf wg0
 ```
 
-When an interface is running, you may use [`wg(8)`](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to configure it, as well as the usual `ip(8)` and `ifconfig(8)` commands.
+When an interface is running, you may use the usual `ip(8)` and `ifconfig(8)` commands `ip addr add X.X.X.X/X dev wg0` and `ip link set wg0 up`.
+See the original wireguard-go [README](https://git.zx2c4.com/wireguard-go/REAMDE.md) for more details
 
 To run with more logging you may set the environment variable `LOG_LEVEL=debug`.
 
-## Platforms
-
-### Linux
-
-This will run on Linux; however you should instead use the kernel module, which is faster and better integrated into the OS. See the [installation page](https://www.wireguard.com/install/) for instructions.
-
-### macOS
-
-This runs on macOS using the utun driver. It does not yet support sticky sockets, and won't support fwmarks because of Darwin limitations. Since the utun driver cannot have arbitrary interface names, you must either use `utun[0-9]+` for an explicit interface name or `utun` to have the kernel select one for you. If you choose `utun` as the interface name, and the environment variable `WG_TUN_NAME_FILE` is defined, then the actual name of the interface chosen by the kernel is written to the file specified by that variable.
-
-### Windows
-
-This runs on Windows, but you should instead use it from the more [fully featured Windows app](https://git.zx2c4.com/wireguard-windows/about/), which uses this as a module.
-
-### FreeBSD
-
-This will run on FreeBSD. It does not yet support sticky sockets. Fwmark is mapped to `SO_USER_COOKIE`.
-
-### OpenBSD
-
-This will run on OpenBSD. It does not yet support sticky sockets. Fwmark is mapped to `SO_RTABLE`. Since the tun driver cannot have arbitrary interface names, you must either use `tun[0-9]+` for an explicit interface name or `tun` to have the program select one for you. If you choose `tun` as the interface name, and the environment variable `WG_TUN_NAME_FILE` is defined, then the actual name of the interface chosen by the kernel is written to the file specified by that variable.
-
-## Building
-
-This requires an installation of [go](https://golang.org) ≥ 1.13.
-
+## Generating the .conf file
+The public and private keys can be generated and printed using the `--keygen` flag.
 ```
-$ git clone https://git.zx2c4.com/wireguard-go
-$ cd wireguard-go
-$ make
+$ ./wireguard --keygen
 ```
+
+The IP address to use as endpoint can be extracted using the `ip addr` command.
+The port to be used can be randomly assigned among the free ports.
+
+The protocol version is set to 1, the booleans `replace_allowed_ips` and `replace_peers` are set to true.
+
+## Demo
+
+You can watch below the video of two peers being configured side-by-side.
+
+TODO: add video.
 
 ## License
 

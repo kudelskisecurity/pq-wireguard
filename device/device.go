@@ -624,3 +624,7 @@ func (device *Device) BindClose() error {
 func (device *Device) PrintDevice() {
 	device.log.Verbosef("Device info:\nSK: %x\nPK: %x\npeer: %+v\n", device.staticIdentity.privateKey, device.staticIdentity.publicKey, device.peers.keyMap)
 }
+
+func GenerateDeviceKeys() ([]byte, []byte){
+	return ccaKyber.KeyGen(nil)
+}
