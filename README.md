@@ -54,7 +54,7 @@ The protocol version is set to 1, the booleans `replace_allowed_ips` and `replac
 
 You can watch below the video of two peers being configured side-by-side.
 
-TODO: add video.
+https://drive.google.com/file/d/1kjXPb9SclK9umB4hkgHnJSDSagKoxhQX/view?usp=sharing
 
 ## License
 
