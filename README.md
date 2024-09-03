@@ -3,10 +3,13 @@
 In this branch, we integrate our [tweaked implementation of the crystals post-quantum algorithms](https://github.com/kudelskisecurity/crystals-go/tree/tweakedKyber) in the [Go implementation of Wireguard](https://github.com/WireGuard/wireguard-go) following the [Fujioka contruction](https://link.springer.com/chapter/10.1007/978-3-642-30057-8_28).
 Please refer to [our blog-post](https://wordpress.com/post/research.kudelskisecurity.com/15437) for more information.
 
+## DISCLAIMER
+
+This application was written as part of a MsC student project in the Cybersecurity Team at Kudelski Security. It is not actively maintained anymore. It is only intended for research and testing. We discourage its use in any production environment. Kudelski Security does not use this application as part of their commercial offers or product. If you are interested in continuing development, feel free to fork it.
+
 ## WIP
 
-We are currently working on overriding the [`wg(8)` commands](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to allow the users to input Kyber keys.
-For now, the key pair and the peers' key must be given within a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/tweakedKyber/peer0.conf)) to showcase the accepted format and required fields.
+Overriding the [`wg(8)` commands](https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8) to allow the users to input Kyber keys is currently not implemented. For now, the key pair and the peers' key must be given within a configuration file when starting the interface, using the `-c` or `--config_file` flag followed by the .conf file. We included examples of such file (see [peer0.conf](https://github.com/kudelskisecurity/pq-wireguard/blob/tweakedKyber/peer0.conf)) to showcase the accepted format and required fields.
 
 ## Building
 
